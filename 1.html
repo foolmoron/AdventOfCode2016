@@ -8,6 +8,54 @@
 </body>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.2/lodash.min.js"></script>
 <script>
-    console.log('lodash test', _.union([1,2,3], [3,5,9]))
+var dir = {
+    U: [0, 1],
+    D: [0, -1],
+    L: [-1, 0],
+    R: [1, 0],
+}
+var dirR = {
+    [dir.U]: dir.R,
+    [dir.D]: dir.L,
+    [dir.L]: dir.U,
+    [dir.R]: dir.D,
+}
+var dirL = {
+    [dir.U]: dir.L,
+    [dir.D]: dir.R,
+    [dir.L]: dir.D,
+    [dir.R]: dir.U,
+}
+
+var input = [[dirR, 2],[dirL, 5],[dirL, 4],[dirL, 5],[dirR, 4],[dirR, 1],[dirL, 4],[dirR, 5],[dirR, 3],[dirR, 1],[dirL, 1],[dirL, 1],[dirR, 4],[dirL, 4],[dirL, 1],[dirR, 4],[dirL, 4],[dirR, 4],[dirL, 3],[dirR, 5],[dirR, 4],[dirR, 1],[dirR, 3],[dirL, 1],[dirL, 1],[dirR, 1],[dirL, 2],[dirR, 5],[dirL, 4],[dirL, 3],[dirR, 1],[dirL, 2],[dirL, 2],[dirR, 192],[dirL, 3],[dirR, 5],[dirR, 48],[dirR, 5],[dirL, 2],[dirR, 76],[dirR, 4],[dirR, 2],[dirR, 1],[dirL, 1],[dirL, 5],[dirL, 1],[dirR, 185],[dirL, 5],[dirL, 1],[dirR, 5],[dirL, 4],[dirR, 1],[dirR, 3],[dirL, 4],[dirL, 3],[dirR, 1],[dirL, 5],[dirR, 4],[dirL, 4],[dirR, 4],[dirR, 5],[dirL, 3],[dirL, 1],[dirL, 2],[dirL, 4],[dirL, 3],[dirL, 4],[dirR, 2],[dirR, 2],[dirL, 3],[dirL, 5],[dirR, 2],[dirR, 5],[dirL, 1],[dirR, 1],[dirL, 3],[dirL, 5],[dirL, 3],[dirR, 4],[dirL, 4],[dirR, 3],[dirL, 1],[dirR, 5],[dirL, 3],[dirR, 2],[dirR, 4],[dirR, 2],[dirL, 1],[dirR, 3],[dirL, 1],[dirL, 3],[dirL, 5],[dirR, 4],[dirR, 5],[dirR, 2],[dirR, 2],[dirL, 5],[dirL, 3],[dirL, 1],[dirL, 1],[dirL, 5],[dirL, 2],[dirL, 3],[dirR, 3],[dirR, 3],[dirL, 3],[dirL, 4],[dirL, 5],[dirR, 2],[dirL, 1],[dirR, 1],[dirR, 3],[dirR, 4],[dirL, 2],[dirR, 1],[dirL, 1],[dirR, 3],[dirR, 3],[dirL, 4],[dirL, 2],[dirR, 5],[dirR, 5],[dirL, 1],[dirR, 4],[dirL, 5],[dirL, 5],[dirR, 1],[dirL, 5],[dirR, 4],[dirR, 2],[dirL, 1],[dirL, 4],[dirR, 1],[dirL, 1],[dirL, 1],[dirL, 5],[dirR, 3],[dirR, 4],[dirL, 2],[dirR, 1],[dirR, 2],[dirR, 1],[dirR, 1],[dirR, 3],[dirL, 5],[dirR, 1],[dirR, 4]]
+
+var posHistory = ['x0y0']
+function move(moves, history) {
+    var pos = [0, 0]
+    var d = dir.U;
+    for (var i = 0; i < moves.length; i++) {
+        var m = moves[i]
+        // rotate
+        d = m[0][d]
+        // move
+        for (var l = 0; l < m[1]; l++) {
+            pos[0] += d[0]
+            pos[1] += d[1]
+            // history
+            if (history) {
+                var posHist = 'x' + pos[0] + 'y' + pos[1]
+                if (posHistory.indexOf(posHist) >= 0)
+                    return pos
+                posHistory.push(posHist)
+            }
+        }
+    }
+    return pos
+}
+function manhattanDist(pos) {
+    return Math.abs(pos[0]) + Math.abs(pos[1])
+}
+
+console.log(manhattanDist(move(input, true)))
 </script>
 </html>
