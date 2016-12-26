@@ -2029,14 +2029,66 @@ function parse(inp) {
                 str += inp[i][s]
             }
         }
+        x.out.push(str)
     }
     return parsed
 }
 
+function hasABBA(str) {
+    var reg = /(?!(.)\1\1\1)(.)(.)\3\2/g
+    var match = reg.exec(str)
+    while (match) {
+        if (match[1] !== match[2]) {
+            return true
+        }
+        match = reg.exec(str)
+    }
+    return false
+}
+
 function validCount(parsed) {
-    
+    var count = 0;
+    for (var i = 0; i < parsed.length; i++) {
+        var ins = parsed[i].ins
+        var out = parsed[i].out
+        var outHasABBA = _.some(out, hasABBA)
+        var insNoABBA = !_.some(ins, hasABBA)
+        if (outHasABBA && insNoABBA) {
+            count++
+        }
+    }
+    return count
+}
+
+function getABAs(str) {
+    var abas = []
+    for (var s = 0; s < str.length; s++) {
+        if (str[s] == str[s + 2] && str[s] != str[s + 1]) {
+            abas.push(str[s] + str[s + 1] + str[s])
+        }
+    }
+    return abas
+}
+
+function hasBAB(str, abas) {
+    return _.some(abas, aba => str.indexOf(aba[1] + aba[0] + aba[1]) >= 0)
+}
+
+function validSSL(parsed) {
+    var count = 0;
+    for (var i = 0; i < parsed.length; i++) {
+        var ins = parsed[i].ins
+        var out = parsed[i].out
+        var outABAs = _.union.apply(null, _.map(out, getABAs))
+        var validBAB = _.some(ins, i => hasBAB(i, outABAs))
+        if (validBAB) {
+            count++
+        }
+    }
+    return count
 }
 
 console.log(validCount(parse(input)))
+console.log(validSSL(parse(input)))
 </script>
 </html>
